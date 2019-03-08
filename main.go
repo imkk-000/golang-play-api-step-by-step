@@ -2,12 +2,15 @@ package main
 
 import "net/http"
 
-func APIHandler(responseWriter http.ResponseWriter, request *http.Request) {
+// APIHandler - implementation of interface Handler
+type APIHandler struct{}
+
+func (APIHandler APIHandler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseWriter.Write([]byte("My API!"))
 }
 
 func main() {
-	http.HandleFunc("/", APIHandler)
+	http.Handle("/", APIHandler{})
 	http.ListenAndServe(":8080", nil)
 }
