@@ -1,27 +1,17 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 )
 
 // APIHandler - implementation of interface Handler
-type APIHandler struct {
-	DefaultResponseMessage string `json:"responseMessage"`
-}
+type APIHandler string
 
-func (APIHandler APIHandler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
-	responseWriter.Header().Add("Content-Type", "application/json")
-	responseMessage, err := json.Marshal(APIHandler)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	responseWriter.Write(responseMessage)
+func (responseMessage APIHandler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.Write([]byte(responseMessage))
 }
 
 func main() {
-	log.Fatalln(http.ListenAndServe(":8080", APIHandler{
-		DefaultResponseMessage: "404 Not Found",
-	}))
+	log.Fatalln(http.ListenAndServe(":8080", APIHandler("404 Not Found")))
 }
