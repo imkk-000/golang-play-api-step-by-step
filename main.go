@@ -1,20 +1,23 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 )
 
 // APIHandler - implementation of interface Handler
 type APIHandler struct {
-	DefaultResponseMessage string
+	DefaultResponseMessage string `json:"responseMessage"`
 }
 
 func (APIHandler APIHandler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.Header().Add("Content-Type", "application/json")
-	responeMessage := fmt.Sprintf(`{"responseMessage":"%s"}`, APIHandler.DefaultResponseMessage)
-	responseWriter.Write([]byte(responeMessage))
+	responseMessage, err := json.Marshal(APIHandler)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	responseWriter.Write(responseMessage)
 }
 
 func main() {
